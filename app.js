@@ -5,6 +5,8 @@ const {
 	date: dateCommand,
 	important: importantCommand,
 	show: showCommand,
+	user: userCommand,
+	sort: sortCommand,
 } = require('./core/processCommands');
 const logger = require('./core/logger');
 
@@ -14,9 +16,11 @@ function getFiles() {
 }
 
 function processCommand(command) {
+	logger.log(`user input: ${command}`);
+
 	// todo text to config.
 	const commands =
-        `
+		`
 help - show all commands.
 
 exit - program shutdown.
@@ -39,22 +43,28 @@ date {yyyy[-mm-dd]}​ - shows all comments that were created after a supplied d
     In response to the "date 2015" command​ "expected a list of t odo​ that were created in 2015 and later.
 `;
 	switch (command) {
-	case 'date': // show all T.O.D.O with match date.
-		dateCommand(command);
+	case 'help': // show all commands
+		console.log(commands);
 		break;
-	case 'important​': // show all T.O.D.O with '!'.
-		importantCommand(command);
+	case 'exit': // exit from util
+		process.exit(0);
 		break;
 	case 'show​': // show all T.O.D.O.
 		showCommand(command);
 		break;
-	case 'help': // show all commands
-		console.log(commands);
+	case 'important​': // show all T.O.D.O with '!'.
+		importantCommand(command);
 		break;
-	case 'exit':
-		process.exit(0);
+	case 'user': // show all T.O.D.O with username.
+		userCommand(command);
 		break;
-	default:
+	case 'sort': // show all sorted T.O.D.O's by priority or username or date.
+		sortCommand(command);
+		break;
+	case 'date': // show all T.O.D.O with match date.
+		dateCommand(command);
+		break;
+	default: // output wrong command
 		console.log('wrong command');
 		break;
 	}
