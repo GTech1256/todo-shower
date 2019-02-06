@@ -1,7 +1,13 @@
+const date = require('./date');
+const important = require('./important​');
+const show = require('./show');
+const sort = require('./sort');
+const user = require('./user');
+
 module.exports = {
-    date: require('./date'),
-    importane: require('./important​'),
-    show: require('./show'),
-    sort: require('./sort'),
-    user: require('./user')
-}
+	date,
+	important,
+	show,
+	sort,
+	user,
+};

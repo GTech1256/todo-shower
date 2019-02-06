@@ -1,3 +1,3 @@
 module.exports = () => {
-    console.log('date')
-}
+	console.log('date');
+};

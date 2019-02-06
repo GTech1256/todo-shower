@@ -4,10 +4,17 @@
   "description": "",
   "scripts": {
     "production": "node index.js",
-    "dev": "node dev.js"
+    "dev": "nodemon dev.js"
   },
   "main": "index.js",
   "author": "Bakakin Roman",
   "license": "ISC",
-  "repository": {}
+  "repository": {},
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "nodemon": "^1.18.9"
+  }
 }

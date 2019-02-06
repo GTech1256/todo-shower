@@ -1,0 +1,60 @@
+{
+	"extends": [
+		"airbnb-base"
+	],
+	"parserOptions": {
+		"ecmaVersion": 2018,
+		"ecmaFeatures": {
+			"experimentalObjectRestSpread": true,
+			"impliedStrict": true,
+			"classes": true
+		},
+		"parser": "babel-eslint"
+	},
+	"rules": {
+		"import/no-unresolved": [
+			"error",
+			{
+				"ignore": [
+					"~apiRoutes",
+					"~userTYPES",
+					"~flagsTYPES",
+					"~gameTYPES",
+					"~authTYPES"
+				]
+			}
+		],
+		"operator-linebreak": [
+			"error",
+			"after"
+		],
+		"arrow-parens": 0,
+		"camelcase": 0,
+		"linebreak-style": [
+			"error",
+			"windows"
+		],
+		"import/prefer-default-export": 0,
+		"no-undef": 0,
+		"no-param-reassign": 0,
+		"no-tabs": [
+			"error",
+			{
+				"allowIndentationTabs": true
+			}
+		],
+		"indent": [
+			2,
+			"tab"
+		],
+		"no-console": 0,
+		"quotes": [
+			2,
+			"single",
+			{
+				"avoidEscape": true,
+				"allowTemplateLiterals": true
+			}
+		]
+	}
+}
