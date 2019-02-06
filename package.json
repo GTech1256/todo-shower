@@ -1,0 +1,13 @@
+{
+  "name": "todo-shower",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "production": "node index.js",
+    "dev": "node dev.js"
+  },
+  "main": "index.js",
+  "author": "Bakakin Roman",
+  "license": "ISC",
+  "repository": {}
+}
