@@ -1,8 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const isDev = process.env.NODE_ENV === 'development';
-
 
 function createOrWriteFile(text) {
 	const time = new Date().toISOString().split('T')[0]; // 2019-02-06T12:30:20.228Z -> 2019-02-06
@@ -21,10 +19,14 @@ function errorLogger(error) {
 	createOrWriteFile(error);
 }
 function dataLogger(text) {
-	if (typeof text !== 'string') {
-		errorLogger(new Error(`${text} is not string`));
-		return;
+	if (process.env.NODE_ENV === 'development') {
+		if (typeof text !== 'string') {
+			errorLogger(new Error(`${text} is not string`));
+			return;
+		}
+		console.log(text);
 	}
+
 
 	createOrWriteFile(text);
 }

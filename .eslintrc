@@ -12,6 +12,8 @@
 		"parser": "babel-eslint"
 	},
 	"rules": {
+		"no-restricted-syntax": 0,
+		"no-continue": 0,
 		"import/no-unresolved": [
 			"error",
 			{

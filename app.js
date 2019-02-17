@@ -1,6 +1,7 @@
 /* eslint-disable no-irregular-whitespace */
-const { getAllFilePathsWithExtension, readFile } = require('./fileSystem');
+const getAllTodos = require('./core/fileSystem/getAllTodos');
 const { readLine } = require('./console');
+
 const {
 	date: dateCommand,
 	important: importantCommand,
@@ -10,17 +11,19 @@ const {
 } = require('./core/processCommands');
 const logger = require('./core/logger');
 
-function getFiles() {
-	const filePaths = getAllFilePathsWithExtension(process.cwd(), 'js');
-	return filePaths.map(path => readFile(path));
-}
+
+// localDB
+let localTodos = [];
 
 function processCommand(command) {
+	// command = command.replace(/\s/g, '');
 	logger.log(`user input: ${command}`);
 
 	// todo text to config.
 	const commands =
 		`
+refresh - load all TODO's again
+
 help - show all commands.
 
 exit - program shutdown.
@@ -42,6 +45,7 @@ date {yyyy[-mm-dd]}​ - shows all comments that were created after a supplied d
     Example commands: "date 2015​ ", "date 2016-02​ ", "date 2018-03-02​ ". 
     In response to the "date 2015" command​ "expected a list of t odo​ that were created in 2015 and later.
 `;
+
 	switch (command) {
 	case 'help': // show all commands
 		console.log(commands);
@@ -49,20 +53,27 @@ date {yyyy[-mm-dd]}​ - shows all comments that were created after a supplied d
 	case 'exit': // exit from util
 		process.exit(0);
 		break;
-	case 'show​': // show all T.O.D.O.
-		showCommand(command);
+	case 'show': // show all T.O.D.O.
+		showCommand(localTodos);
 		break;
-	case 'important​': // show all T.O.D.O with '!'.
-		importantCommand(command);
+	case 'important': // show all T.O.D.O with '!'.
+		importantCommand(localTodos);
 		break;
 	case 'user': // show all T.O.D.O with username.
-		userCommand(command);
+		userCommand(localTodos);
 		break;
 	case 'sort': // show all sorted T.O.D.O's by priority or username or date.
-		sortCommand(command);
+		sortCommand(localTodos);
 		break;
 	case 'date': // show all T.O.D.O with match date.
-		dateCommand(command);
+		dateCommand(localTodos);
+		break;
+	case 'refresh': // refresh Todos
+		logger.log('start search files');
+		getAllTodos().then((todos) => {
+			localTodos = todos;
+			console.log('new todos loaded!');
+		});
 		break;
 	default: // output wrong command
 		console.log('wrong command');
@@ -75,12 +86,49 @@ date {yyyy[-mm-dd]}​ - shows all comments that were created after a supplied d
 // main function
 module.exports = () => {
 	try {
-		const files = getFiles();
-		console.log(files, 'files');
-		console.log('Please, write your command!');
-		console.log('help - for show all commands.');
+		logger.log('start search files');
+		getAllTodos().then((todos) => {
+			localTodos = todos;
+			console.log('Please, write your command!');
+
+			if (process.env.NODE_ENV === 'development') {
+				console.log('help - for show all commands.');
+			}
+		});
+
 		readLine(processCommand); // do some magic with command from terminal
+
+		// const data = getFiles();
 	} catch (e) {
 		logger.error(e); // logging all unhandled errors
 	}
 };
+
+// Пробелы не входят в итоговый результат
+
+/*
+
+в sort user пользователь gar и GAR один user или два разных? Имеет ли тут регистр значение?
+Сделать конфиг
+*/
+
+// // TODO terminator;;i'll be back
+
+/*
+
+Для минимальной реализации у вас будут строго правильные комментарии. Валидные, с полной датой и все такое. В остальных тестах есть куча всяких невалидных и странных случаев. Чем больше из них вы учтете, тем больше баллов за тесты получите.
+
+
+*/
+
+// date не нужно сортировать, как и аналогичные ей user и important
+
+/*
+
+Artem Gafetinov, [04.02.19 12:23]
+А если команды user, date, sort введены без параметров, то выводить wrong command?
+
+Veronika, [04.02.19 12:58]
+да
+
+*/
