@@ -6,8 +6,6 @@ const config = require('../../config');
 
 const getAllFilePathsWithExtension =
 	async (directoryPath, extension, filePaths = []) => new Promise((resolve, reject) => {
-		// TODO Anonymous Developer; 2016-03-17; Необходимо переписать этот код и использовать асинхронные версии функций для чтения из файла
-
 		fs.readdir(directoryPath, async (error, fileNames) => { // get names of files
 			if (error) { // catch error
 				logger.error(error);

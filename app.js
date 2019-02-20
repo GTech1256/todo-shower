@@ -47,28 +47,28 @@ date {yyyy[-mm-dd]}​ - shows all comments that were created after a supplied d
 `;
 
 	switch (command) {
-	case 'help': // show all commands
+	case (command.match(/help/) || {}).input: // show all commands
 		console.log(commands);
 		break;
-	case 'exit': // exit from util
+	case (command.match(/exit/) || {}).input: // exit from util
 		process.exit(0);
 		break;
-	case 'show': // show all T.O.D.O.
+	case (command.match(/show/) || {}).input: // show all T.O.D.O.
 		showCommand(localTodos);
 		break;
-	case 'important': // show all T.O.D.O with '!'.
+	case (command.match(/important/) || {}).input: // show all T.O.D.O with '!'.
 		importantCommand(localTodos);
 		break;
-	case 'user': // show all T.O.D.O with username.
-		userCommand(localTodos);
+	case (command.match(/user /) || {}).input: // show all T.O.D.O with username.
+		userCommand(localTodos, command);
 		break;
-	case 'sort': // show all sorted T.O.D.O's by priority or username or date.
-		sortCommand(localTodos);
+	case (command.match(/sort /) || {}).input: // show all sorted T.O.D.O's by priority or username or date.
+		sortCommand(localTodos, command);
 		break;
-	case 'date': // show all T.O.D.O with match date.
-		dateCommand(localTodos);
+	case (command.match(/date /) || {}).input: // show all T.O.D.O with match date.
+		dateCommand(localTodos, command);
 		break;
-	case 'refresh': // refresh Todos
+	case (command.match(/refresh/) || {}).input: // refresh Todos
 		logger.log('start search files');
 		getAllTodos().then((todos) => {
 			localTodos = todos;
@@ -113,6 +113,14 @@ module.exports = () => {
 */
 
 // // TODO terminator;;i'll be back
+// // TODO terminator;;i'll be back
+// // TODO terminator;;i'll be back
+// // TODO terminator;;i'll be back
+// // TODO terminator;;i'll be back
+// // TODO terminator;;i'll be back
+// // TODO terminator;2016-10-10;i'll be back
+// // TODO terminator;2016-10;i'll be back
+// // TODO terminator;2016;i'll be back
 
 /*
 

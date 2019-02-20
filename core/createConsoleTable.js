@@ -1,30 +1,41 @@
 const settings = {
 	minSpaceAround: 2,
-	headers: ['!', 'user', 'date', 'comment', 'fileName'],
+	headers: [{ output: '!' }, { output: 'user' }, { output: 'date' }, { output: 'comment' }, { output: 'fileName' }],
 };
 
 
 function calculateLengthEveryVariable(data) {
+	/*
 	const basicLength = settings.minSpaceAround * 2 + 1; // __!__
+
 
 	const lengths = {
 		'!': basicLength,
-		username: basicLength,
+		user: basicLength,
 		date: basicLength,
 		comment: basicLength,
 		fileName: basicLength,
 		maxLength: basicLength,
 	};
+	*/
+
+	const lengths = {
+		maxLength: settings.minSpaceAround * 2,
+	};
+
+	for (const { output } of settings.headers) {
+		lengths[output] = output.length + (settings.minSpaceAround * 2); // init headers length
+	}
 
 
 	for (const item of data) {
-		for (const keysOfItems of Object.keys(item)) {
-			if (!item[keysOfItems]) continue; // if payload null
+		for (const keyOfItems of Object.keys(item)) {
+			if (!item[keyOfItems]) continue; // if payload null
 
-			const payloadLength = item[keysOfItems].length + (settings.minSpaceAround * 2);
+			const payloadLength = item[keyOfItems].output.length + (settings.minSpaceAround * 2);
 
-			if (lengths[keysOfItems] < payloadLength) { // set param length
-				lengths[keysOfItems] = payloadLength;
+			if (lengths[keyOfItems] < payloadLength) { // set param length
+				lengths[keyOfItems] = payloadLength;
 
 				if (lengths.maxLength < payloadLength) { // set maxLength
 					lengths.maxLength = payloadLength;
@@ -32,24 +43,43 @@ function calculateLengthEveryVariable(data) {
 			}
 		}
 	}
+
 	return lengths;
 }
 
 function getLine(object, lengths) {
 	let lineString = '';
 
-	const valuesOfLengths = Object.values(lengths);
-
+	const maximalLenghts = Object.values(lengths);
 	const spaces = ' '.repeat(settings.minSpaceAround);
+	/*
 
-	object.forEach((value = '', i) => {
-		const lastSpaces = ' '.repeat(valuesOfLengths[i] - settings.minSpaceAround - value.length);
+	console.log(objects)
+	for (const object of Object.entries(objects)) {
+		const [key, value = { output: '' }] = object;
+		console.log(object);
+		const countSpaces = lengths[key] - settings.minSpaceAround - value.output.length;
+		const lastSpaces = ' '.repeat(countSpaces <= 0 ? settings.minSpaceAround : countSpaces);
 
-		lineString += `${spaces}${value}${lastSpaces}`;
+		lineString += `${spaces}${value.output}${lastSpaces}`;
+		if (object[key] !== settings.headers[settings.length - 1]) {
+			lineString += '|';
+		}
+	}
+	*/
+
+
+	object.forEach((value = ({ output: '' }), i) => {
+		// i + 1 - 0 is maxLength
+		const countSpaces = maximalLenghts[i + 1] - value.output.length - settings.minSpaceAround;
+		const lastSpaces = ' '.repeat(countSpaces <= 0 ? settings.minSpaceAround : countSpaces);
+
+		lineString += `${spaces}${value.output}${lastSpaces}`;
 		if (i !== object.length - 1) {
 			lineString += '|';
 		}
 	});
+
 
 	return lineString;
 }
@@ -57,7 +87,6 @@ function getLine(object, lengths) {
 
 module.exports = (data) => {
 	const lengths = calculateLengthEveryVariable(data);
-
 	const header = getLine(settings.headers, lengths);
 	const lines = '-'.repeat(header.length);
 
