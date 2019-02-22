@@ -11,6 +11,7 @@ module.exports = (todos, command) => {
 
 	const timeFromCommand = new Date(date).getTime();
 
+	// eslint-disable-next-line consistent-return
 	return todos.filter(
 		todo => {
 			if (!todo.date) {
@@ -27,14 +28,3 @@ module.exports = (todos, command) => {
 		},
 	);
 };
-
-
-/*
-
-> В ответ на команду  "date 2015" ожидается список todo, которые были созданы в 2015 году и позже.
-todo без даты неизвестно, когда созданы, поэтому не выводятся
-
-Соответственно  на date 2015-05 не выводится todo 2015 тк не известно какого месяца созданы, я правильно понял?
-> Да, все правильно
-
- */

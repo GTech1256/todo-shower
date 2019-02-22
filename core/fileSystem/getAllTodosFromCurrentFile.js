@@ -104,7 +104,7 @@ function normalizationAllTodosInFile(dataArrayLines, fileName) {
 				fileName,
 			};
 		}
-		default:
+		default: {
 			// some wrong ?
 			const isValidDate = matchDate(variables[1].trim());
 			return {
@@ -114,6 +114,7 @@ function normalizationAllTodosInFile(dataArrayLines, fileName) {
 				comment: normalizeData(variables[2]),
 				fileName,
 			};
+		}
 		}
 	});
 

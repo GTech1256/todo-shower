@@ -1,81 +1,80 @@
+/* eslint-disable no-template-curly-in-string */
 const http = require('http');
-const eventBus = require('../core/eventBus');
 const url = require('url');
+const eventBus = require('../core/eventBus');
 const localDB = require('../db');
 const createConsoleTable = require('../core/createTable');
 const { matchDate } = require('../helpers/validator');
 const {
-  date: getDateByCommand,
-  important: getImportantByCommand,
-  show: getShowByCommand,
-  user: getUserByCommand,
-  sort: getSortByCommand,
+	date: getDateByCommand,
+	important: getImportantByCommand,
+	show: getShowByCommand,
+	user: getUserByCommand,
+	sort: getSortByCommand,
 } = require('../core/processCommands');
 const { server } = require('../config');
 
 const { port } = server;
 
 http.createServer((req, res) => {
+	res.writeHead(200, {
+		Connection: 'keep-alive',
+		'Content-Type': 'text/event-stream; charset=utf-8',
+		'Cache-Control': 'no-cache',
+	});
+
+	eventBus.on('newTodos', () => {
+		res.write(`\nAVILABLE NEW TODOS. \nPlease reload page: ${new Date().toLocaleString()} \n`);
+	});
+
+	const srvUrl = url.parse(`http://${req.url}`);
+	switch (srvUrl.pathname) {
+	case '/important': {
+		res.write(createConsoleTable(getImportantByCommand(localDB.todos), false));
+		break;
+	}
 
 
-  res.writeHead(200, {
-    Connection: 'keep-alive',
-    'Content-Type': 'text/event-stream; charset=utf-8',
-    'Cache-Control': 'no-cache'
-  });
+	case '/show': {
+		res.write(createConsoleTable(getShowByCommand(localDB.todos), false));
+		break;
+	}
 
-  eventBus.on('newTodos', () => {
-    res.write(`\nAVILABLE NEW TODOS. \nPlease reload page: ${new Date().toLocaleString()} \n`)
-  });
+	case '/user': {
+		const [key, value] = srvUrl.query.split('=');
 
-  const srvUrl = url.parse(`http://${req.url}`);
-  switch (srvUrl.pathname) {
+		if (key !== 'user' || !value) {
+			res.write('wrong query: localhost:${port}/user?user={username}');
+			break;
+		}
 
-    case '/important': {
-      res.write(createConsoleTable(getImportantByCommand(localDB.todos), false))
-    }
-      break;
+		res.write(createConsoleTable(getUserByCommand(localDB.todos, `someCommand ${value}`), false));
+	}
+		break;
+	case '/date': {
+		const [key, value] = srvUrl.query.split('=');
+		if (key !== 'date' || matchDate(value) === null) {
+			res.write('wrong query or date: localhost:${port}/date?date={yyyy[-mm-dd]}​');
+			break;
+		}
+		res.write(createConsoleTable(getDateByCommand(localDB.todos, `someCommand ${value}`), false));
+	}
+		break;
+	case '/sort': {
+		const [key, value] = srvUrl.query.split('=');
 
-    case '/show': {
-      res.write(createConsoleTable(getShowByCommand(localDB.todos), false))
-    }
+		const allowedValues = ['importance', 'user', 'date'];
 
-      break;
-    case '/user': {
-      const [key, value] = srvUrl.query.split('=');
+		if (key !== 'by' || !allowedValues.includes(value)) {
+			res.write('wrong query: localhost:${port}/sort?by={importance | user | date}');
+			break;
+		}
+		res.write(createConsoleTable(getSortByCommand(localDB.todos, `someCommand ${value}`), false));
+	}
 
-      if (key !== 'user' || !value) {
-        res.write('wrong query: localhost:${port}/user?user={username}')
-        break;
-      };
-
-      res.write(createConsoleTable(getUserByCommand(localDB.todos, `someCommand ${value}`), false))
-    }
-      break;
-    case '/date': {
-      const [key, value] = srvUrl.query.split('=');
-      if (key !== 'date' || matchDate(value) === null) {
-        res.write('wrong query or date: localhost:${port}/date?date={yyyy[-mm-dd]}​')
-        break;
-      }
-      res.write(createConsoleTable(getDateByCommand(localDB.todos, `someCommand ${value}`), false))
-    }
-      break;
-    case '/sort': {
-      const [key, value] = srvUrl.query.split('=');
-
-      const allowedValues = ['importance', 'user', 'date'];
-
-      if (key !== 'by' || !allowedValues.includes(value)) {
-        res.write('wrong query: localhost:${port}/sort?by={importance | user | date}')
-        break;
-      }
-      res.write(createConsoleTable(getSortByCommand(localDB.todos, `someCommand ${value}`), false))
-    }
-
-      break;
-    default:
-      const commands =
+		break;
+	default: {
+		const commands =
         `
 localhost:${port} - show all commands.
 
@@ -95,20 +94,17 @@ localhost:${port}/date?date={yyyy[-mm-dd]}​ - shows all comments that were cre
     The date can only be a year, a year with a month (hyphenated), or a year with a month and in the daytime. 
     Example commands: "date 2015​ ", "date 2016-02​ ", "date 2018-03-02​ ". 
     In response to the "date 2015" command​ "expected a list of t odo​ that were created in 2015 and later.
-`
-      res.write(commands)
-      break;
+`;
+		res.write(commands);
+		break;
+	}
+	}
 
-
-  }
-
-  setInterval(() => {
-    res.write('\nWaiting for new todos...\n')
-  }, 3000) // every 3 second send to front text about waiting
-
-
+	setInterval(() => {
+		res.write('\nWaiting for new todos...\n');
+	}, 3000); // every 3 second send to front text about waiting
 }).listen(port);
 
-console.log('--------------------------------')
-console.log('Server started localhost:' + port)
-console.log('--------------------------------')
+console.log('--------------------------------');
+console.log(`Server started localhost:${port}`);
+console.log('--------------------------------');

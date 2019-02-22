@@ -1,6 +1,4 @@
-module.exports = (todos) => {
-	return todos.filter(todo => todo['!'].count > 0);
-};
+module.exports = (todos) => todos.filter(todo => todo['!'].count > 0);
 
 
 // TODO Hi!

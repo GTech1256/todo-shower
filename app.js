@@ -16,12 +16,9 @@ const {
 const logger = require('./core/logger');
 
 
-
-
 // check on fileChanges
 fs.watch(__dirname, { recursive: true }, (event, fileName) => {
 	if (fileName && fileName.search(/.log/) === -1 && process.env.NODE_ENV === 'development') { // if file changed not log and is development
-
 		logger.log('start search files');
 
 		getAllTodos().then((todos) => {
@@ -29,7 +26,6 @@ fs.watch(__dirname, { recursive: true }, (event, fileName) => {
 			eventBus.emit('newTodos', todos); // event for server side
 			console.log('new todos loaded!');
 		});
-
 	}
 });
 
@@ -65,37 +61,37 @@ date {yyyy[-mm-dd]}​ - shows all comments that were created after a supplied d
 `;
 
 	switch (command) {
-		case (command.match(/help/) || {}).input: // show all commands
-			console.log(commands);
-			break;
-		case (command.match(/exit/) || {}).input: // exit from util
-			process.exit(0);
-			break;
-		case (command.match(/show/) || {}).input: // show all T.O.D.O.
-			createConsoleTable(getShowByCommand(localDB.todos))
-			break;
-		case (command.match(/important/) || {}).input: // show all T.O.D.O with '!'.
-			createConsoleTable(getImportantByCommand(localDB.todos))
-			break;
-		case (command.match(/user /) || {}).input: // show all T.O.D.O with username.
-			createConsoleTable(getUserByCommand(localDB.todos, command))
-			break;
-		case (command.match(/sort /) || {}).input: // show all sorted T.O.D.O's by priority or username or date.
-			createConsoleTable(getSortByCommand(localDB.todos, command))
-			break;
-		case (command.match(/date /) || {}).input: // show all T.O.D.O with match date.
-			createConsoleTable(getDateByCommand(localDB.todos, command))
-			break;
-		case (command.match(/refresh/) || {}).input: // refresh Todos
-			logger.log('start search files');
-			getAllTodos().then((todos) => {
-				localDB.todos = todos;
-				console.log('new todos loaded!');
-			});
-			break;
-		default: // output wrong command
-			console.log('wrong command');
-			break;
+	case (command.match(/help/) || {}).input: // show all commands
+		console.log(commands);
+		break;
+	case (command.match(/exit/) || {}).input: // exit from util
+		process.exit(0);
+		break;
+	case (command.match(/show/) || {}).input: // show all T.O.D.O.
+		createConsoleTable(getShowByCommand(localDB.todos));
+		break;
+	case (command.match(/important/) || {}).input: // show all T.O.D.O with '!'.
+		createConsoleTable(getImportantByCommand(localDB.todos));
+		break;
+	case (command.match(/user /) || {}).input: // show all T.O.D.O with username.
+		createConsoleTable(getUserByCommand(localDB.todos, command));
+		break;
+	case (command.match(/sort /) || {}).input: // show all sorted T.O.D.O's by priority or username or date.
+		createConsoleTable(getSortByCommand(localDB.todos, command));
+		break;
+	case (command.match(/date /) || {}).input: // show all T.O.D.O with match date.
+		createConsoleTable(getDateByCommand(localDB.todos, command));
+		break;
+	case (command.match(/refresh/) || {}).input: // refresh Todos
+		logger.log('start search files');
+		getAllTodos().then((todos) => {
+			localDB.todos = todos;
+			console.log('new todos loaded!');
+		});
+		break;
+	default: // output wrong command
+		console.log('wrong command');
+		break;
 	}
 }
 
@@ -106,7 +102,6 @@ module.exports = () => {
 	try {
 		logger.log('start search files');
 		getAllTodos().then((todos) => {
-
 			localDB.todos = todos;
 
 			console.log('Please, write your command!');
@@ -122,14 +117,6 @@ module.exports = () => {
 	}
 };
 
-// Пробелы не входят в итоговый результат
-
-/*
-
-в sort user пользователь gar и GAR один user или два разных? Имеет ли тут регистр значение?
-Сделать конфиг
-*/
-
 // // TODO terminator;;i'll be back
 // // TODO terminator;;i'll be back
 // // TODO terminator;;i'll be back
@@ -139,22 +126,3 @@ module.exports = () => {
 // // TODO terminator;2016-10-10;i'll be back
 // // TODO terminator;2016-10;i'll be back
 // // TODO terminator;2016;i'll be back
-
-/*
-
-Для минимальной реализации у вас будут строго правильные комментарии. Валидные, с полной датой и все такое. В остальных тестах есть куча всяких невалидных и странных случаев. Чем больше из них вы учтете, тем больше баллов за тесты получите.
-
-
-*/
-
-// date не нужно сортировать, как и аналогичные ей user и important
-
-/*
-
-Artem Gafetinov, [04.02.19 12:23]
-А если команды user, date, sort введены без параметров, то выводить wrong command?
-
-Veronika, [04.02.19 12:58]
-да
-
-*/
