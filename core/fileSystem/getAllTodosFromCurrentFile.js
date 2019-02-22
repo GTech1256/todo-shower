@@ -57,63 +57,63 @@ function normalizationAllTodosInFile(dataArrayLines, fileName) {
 		const variables = string.split(/(?<!\\);/g); // added screening for todo
 
 		switch (variables.length) {
-			case 0: {
-				return {
-					'!': undefined,
-					user: undefined,
-					date: undefined,
-					comment: undefined,
-					fileName,
-				};
-			}
-			case 1: // only comment
-				return {
-					'!': importance,
-					user: undefined,
-					date: undefined,
-					comment: normalizeData(variables[0]),
-					fileName,
-				};
-			case 2: { // comment + [user||date]
-				const indexOfTime = variables.findIndex(variable => matchDate(variable)); // xxxx || xxxx-xx || xxxx-xx-xx
+		case 0: {
+			return {
+				'!': undefined,
+				user: undefined,
+				date: undefined,
+				comment: undefined,
+				fileName,
+			};
+		}
+		case 1: // only comment
+			return {
+				'!': importance,
+				user: undefined,
+				date: undefined,
+				comment: normalizeData(variables[0]),
+				fileName,
+			};
+		case 2: { // comment + [user||date]
+			const indexOfTime = variables.findIndex(variable => matchDate(variable)); // xxxx || xxxx-xx || xxxx-xx-xx
 
-				if (indexOfTime === -1) {
-					return {
-						'!': importance,
-						user: normalizeData(variables[0]),
-						date: undefined,
-						comment: normalizeData(variables[1]),
-						fileName,
-					};
-				}
-				return {
-					'!': importance,
-					user: undefined,
-					date: normalizeData(indexOfTime === 0 ? variables[0] : variables[1]),
-					comment: normalizeData(indexOfTime === 0 ? variables[1] : variables[0]),
-					fileName,
-				};
-			}
-			case 3: { // full
-				const isValidDate = matchDate(variables[1].trim());
+			if (indexOfTime === -1) {
 				return {
 					'!': importance,
 					user: normalizeData(variables[0]),
-					date: isValidDate ? normalizeData(variables[1]) : undefined,
-					comment: normalizeData(variables[2]),
+					date: undefined,
+					comment: normalizeData(variables[1]),
 					fileName,
 				};
 			}
-			default:
-				// some wrong ?
-				const isValidDate = matchDate(variables[1].trim());
-				return {
-					'!': importance,
-					user: normalizeData(variables[0]),
-					date: isValidDate ? normalizeData(variables[1]) : undefined,
-					comment: normalizeData(variables[2]),
-					fileName,
-				};
+			return {
+				'!': importance,
+				user: undefined,
+				date: normalizeData(indexOfTime === 0 ? variables[0] : variables[1]),
+				comment: normalizeData(indexOfTime === 0 ? variables[1] : variables[0]),
+				fileName,
+			};
+		}
+		case 3: { // full
+			const isValidDate = matchDate(variables[1].trim());
+			return {
+				'!': importance,
+				user: normalizeData(variables[0]),
+				date: isValidDate ? normalizeData(variables[1]) : undefined,
+				comment: normalizeData(variables[2]),
+				fileName,
+			};
+		}
+		default:
+			// some wrong ?
+			const isValidDate = matchDate(variables[1].trim());
+			return {
+				'!': importance,
+				user: normalizeData(variables[0]),
+				date: isValidDate ? normalizeData(variables[1]) : undefined,
+				comment: normalizeData(variables[2]),
+				fileName,
+			};
 		}
 	});
 

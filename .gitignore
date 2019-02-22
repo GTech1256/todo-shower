@@ -1,5 +1,8 @@
 # Logs
-*.log
+# ignore files in folder logs
+logs/*
+# but please keep the folder
+!logs/.keep
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -25,4 +28,6 @@ node_modules/
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
+
+
 
