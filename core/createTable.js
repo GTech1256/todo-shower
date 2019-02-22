@@ -31,7 +31,6 @@ function calculateLengthEveryVariable(data) {
 	for (const item of data) {
 		for (const keyOfItems of Object.keys(item)) {
 			if (!item[keyOfItems]) continue; // if payload null
-
 			const payloadLength = item[keyOfItems].output.length + (settings.minSpaceAround * 2);
 
 			if (lengths[keyOfItems] < payloadLength) { // set param length
@@ -52,21 +51,6 @@ function getLine(object, lengths) {
 
 	const maximalLenghts = Object.values(lengths);
 	const spaces = ' '.repeat(settings.minSpaceAround);
-	/*
-
-	console.log(objects)
-	for (const object of Object.entries(objects)) {
-		const [key, value = { output: '' }] = object;
-		console.log(object);
-		const countSpaces = lengths[key] - settings.minSpaceAround - value.output.length;
-		const lastSpaces = ' '.repeat(countSpaces <= 0 ? settings.minSpaceAround : countSpaces);
-
-		lineString += `${spaces}${value.output}${lastSpaces}`;
-		if (object[key] !== settings.headers[settings.length - 1]) {
-			lineString += '|';
-		}
-	}
-	*/
 
 
 	object.forEach((value = ({ output: '' }), i) => {
@@ -85,7 +69,7 @@ function getLine(object, lengths) {
 }
 
 
-module.exports = (data) => {
+module.exports = (data, isShow = true) => {
 	const lengths = calculateLengthEveryVariable(data);
 	const header = getLine(settings.headers, lengths);
 	const lines = '-'.repeat(header.length);
@@ -101,6 +85,9 @@ ${header}
 ${lines}
 ${content}${lines}`;
 
+	if (isShow) {
+		console.log(output);
+	}
 
-	console.log(output);
+	return output;
 };

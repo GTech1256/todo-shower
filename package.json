@@ -9,7 +9,10 @@
   "main": "index.js",
   "author": "Bakakin Roman",
   "license": "ISC",
-  "repository": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GTech1256/todo-shower.git"
+  },
   "devDependencies": {
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "^17.1.0",

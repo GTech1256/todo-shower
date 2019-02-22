@@ -1,4 +1,3 @@
-const createConsoleTable = require('../createConsoleTable');
 const { matchDate } = require('../../helpers/validator');
 
 module.exports = (todos, command) => {
@@ -12,7 +11,7 @@ module.exports = (todos, command) => {
 
 	const timeFromCommand = new Date(date).getTime();
 
-	createConsoleTable(todos.filter(
+	return todos.filter(
 		todo => {
 			if (!todo.date) {
 				return false;
@@ -26,7 +25,7 @@ module.exports = (todos, command) => {
 
 			return true;
 		},
-	));
+	);
 };
 
 

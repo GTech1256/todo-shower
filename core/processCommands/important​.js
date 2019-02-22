@@ -1,7 +1,5 @@
-const createConsoleTable = require('../createConsoleTable');
-
 module.exports = (todos) => {
-	createConsoleTable(todos.filter(todo => todo['!'].count > 0));
+	return todos.filter(todo => todo['!'].count > 0);
 };
 
 
