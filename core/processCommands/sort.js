@@ -1,7 +1,8 @@
 /* eslint-disable consistent-return */
 /* eslint-disable eqeqeq */
 
-function compareParam(a, b, isRevert) {
+
+function compareParam(a, b, isRevert) { // self-writen function for sort
 	if (a == undefined && b) return 1;
 	if (a == undefined && b == undefined) return 0;
 	if (a && b == undefined) return -1;
@@ -12,6 +13,11 @@ function compareParam(a, b, isRevert) {
 	return 0;
 }
 
+/**
+ * @param {[{ importance: Number, user: String, date: Date, comment: String, fileName: String }]} todos - all todos from fileSystem.js
+ * @param {String} command user command from console (stdin) - [importance | user | date]
+ * @returns {[{ importance: Number, user: String, date: Date, comment: String, fileName: String }]} filter by one of type(enum)
+ */
 module.exports = (todos, command) => {
 	const sortBy = command.split(' ')[1];
 

@@ -1,19 +1,21 @@
+// just self-writen mini logger
+
 const fs = require('fs');
 const path = require('path');
 
-
 function createOrWriteFile(text, isError) {
+	const time = new Date().toISOString().split('T'); // 2019-02-06T12:30:20.228Z -> 2019-02-06
+
 	let pathToFile;
 	if (isError) {
-		pathToFile = path.join(__dirname, `../../logs/errors.log`);
+		pathToFile = path.join(__dirname, `../../logs/errors.log`); // if error - write in errors file
 	} else {
-		const time = new Date().toISOString().split('T')[0]; // 2019-02-06T12:30:20.228Z -> 2019-02-06
-		pathToFile = path.join(__dirname, `../../logs/${time}.log`);
+		pathToFile = path.join(__dirname, `../../logs/${time[0]}.log`); // calculate path for write
 	}
 
-	const formatedText = `${text}\r\n`;
+	const formatedText = `${text}${time}\r\n`;
 
-
+	// write all data with date
 	fs.appendFile(pathToFile, formatedText, (err) => {
 		if (err) throw err;
 	});
@@ -23,7 +25,7 @@ function errorLogger(error) {
 	if (typeof error === 'string') {
 		createOrWriteFile(error, true);
 	} else { // Error object
-		createOrWriteFile(`\n${error.message}\n${error.stack}\n`, true);
+		createOrWriteFile(`\n${error.message}\n${error.stack}\n`, true); // calculate error txt
 	}
 }
 function dataLogger(text) {
@@ -32,7 +34,7 @@ function dataLogger(text) {
 			errorLogger(new Error(`${text} is not string`));
 			return;
 		}
-		console.log(text);
+		console.log(text); // if is dev - all txt to console
 	}
 
 

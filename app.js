@@ -29,6 +29,10 @@ fs.watch(__dirname, { recursive: true }, (event, fileName) => {
 	}
 });
 
+/**
+ *
+ * @param {String} command string from user input (console(stdin) | server(http))
+ */
 function processCommand(command) {
 	// command = command.replace(/\s/g, '');
 	logger.log(`user input: ${command}`);

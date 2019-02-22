@@ -3,6 +3,10 @@ const getAllTodosFromCurrentFile = require('./getAllTodosFromCurrentFile');
 const logger = require('../logger');
 const config = require('../../config');
 
+/**
+ * return all todos from all project
+ * @returns {Promise} resolve {{ importance: Number, user: String, date: Date, comment: String, fileName: String }} | reject {Error}
+ */
 module.exports = () => getAllFilePathsWithExtension(process.cwd(), 'js').then(async filePaths => {
 	logger.log('end search files');
 	logger.log(`ignored: ${config.fileSystem.ignoreNameFiles.join(', ')}`);
@@ -10,7 +14,6 @@ module.exports = () => getAllFilePathsWithExtension(process.cwd(), 'js').then(as
 	logger.log('start making files');
 
 	let todos = [];
-	// eslint-disable-next-line no-restricted-syntax
 	for (const filePath of filePaths) {
 		// eslint-disable-next-line no-await-in-loop
 		todos = [...todos, ...(await getAllTodosFromCurrentFile(filePath))];

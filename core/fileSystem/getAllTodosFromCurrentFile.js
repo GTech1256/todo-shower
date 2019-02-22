@@ -2,25 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const { matchDate } = require('../../helpers/validator');
 
-const getAllTodosFromCurrentFile = filePath => new Promise((resolve, reject) => {
-	let allData = [];
-
-	const stream = fs.createReadStream(filePath, { encoding: 'utf8' });
-
-	stream.on('data', chunk => {
-		allData = [...allData, ...chunk.split(/\n/)];
-		// stream.destroy();
-	});
-
-	stream.on('close', () => {
-		resolve(normalizationAllTodosInFile(allData, path.parse(filePath).base));
-	});
-
-	stream.on('error', error => {
-		reject(error);
-	});
-});
-
+/**
+ *
+ * @param {String} text - convert to text without spaces and tabs
+ * @returns {output: text}
+ */
 function normalizeData(text) {
 	const normalizedDate = text.replace(/\t|\r/g, '').trim();
 
@@ -34,11 +20,15 @@ function normalizeData(text) {
 }
 
 /**
+ * @param {Array} dataArrayLines - array of file lines
+ * @param {String} fileName - current filename
  * @returns {{ importance: Number, user: String, date: Date, comment: String, fileName: String }}
- *
  */
 function normalizationAllTodosInFile(dataArrayLines, fileName) {
+	// normalize
 	fileName = normalizeData(fileName);
+
+	// remove lines without todo
 	const filteredStrings = dataArrayLines.filter(string => string.replace(/\s/g, '').toLowerCase().match('//t\\odo'));
 
 
@@ -54,8 +44,11 @@ function normalizationAllTodosInFile(dataArrayLines, fileName) {
 			output: countOfImportance > 0 ? '!' : '',
 		};
 
-		const variables = string.split(/(?<!\\);/g); // added screening for todo
+		const variables = string.split(/(?<!\\);/g); // screening for ';'
 
+
+		/* construct output Object */
+		/* construct output Object */
 		switch (variables.length) {
 		case 0: {
 			return {
@@ -121,5 +114,30 @@ function normalizationAllTodosInFile(dataArrayLines, fileName) {
 
 	return normalizedTodos;
 }
+
+/**
+ *
+ * @param {String} filePath for reading
+ * @returns {Promise}  | reject - {Object}  | resolve {Error}
+ */
+const getAllTodosFromCurrentFile = filePath => new Promise((resolve, reject) => {
+	let allData = [];
+
+	const stream = fs.createReadStream(filePath, { encoding: 'utf8' });
+
+	stream.on('data', chunk => {
+		allData = [...allData, ...chunk.split(/\n/)];
+		// stream.destroy();
+	});
+
+	stream.on('close', () => {
+		resolve(normalizationAllTodosInFile(allData, path.parse(filePath).base));
+	});
+
+	stream.on('error', error => {
+		reject(error);
+	});
+});
+
 
 module.exports = getAllTodosFromCurrentFile;

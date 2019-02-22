@@ -14,50 +14,56 @@ const {
 } = require('../core/processCommands');
 const { server } = require('../config');
 
+
 const { port } = server;
 
+
 http.createServer((req, res) => {
-	res.writeHead(200, {
+	res.writeHead(200, { // set headers for every request
 		Connection: 'keep-alive',
 		'Content-Type': 'text/event-stream; charset=utf-8',
 		'Cache-Control': 'no-cache',
 	});
 
-	eventBus.on('newTodos', () => {
+	eventBus.on('newTodos', () => { // show txt in front by new todos
 		res.write(`\nAVILABLE NEW TODOS. \nPlease reload page: ${new Date().toLocaleString()} \n`);
 	});
 
-	const srvUrl = url.parse(`http://${req.url}`);
+	const srvUrl = url.parse(`http://${req.url}`); // parse url for swith by pathname and query validate
+
+
 	switch (srvUrl.pathname) {
 	case '/important': {
-		res.write(createConsoleTable(getImportantByCommand(localDB.todos), false));
+		res.write(createConsoleTable(getImportantByCommand(localDB.todos), false)); // send txt table
 		break;
 	}
 
 
 	case '/show': {
-		res.write(createConsoleTable(getShowByCommand(localDB.todos), false));
+		res.write(createConsoleTable(getShowByCommand(localDB.todos), false)); // send txt table
 		break;
 	}
 
 	case '/user': {
 		const [key, value] = srvUrl.query.split('=');
 
-		if (key !== 'user' || !value) {
-			res.write('wrong query: localhost:${port}/user?user={username}');
+		if (key !== 'user' || !value) { // query validate
+			res.end('wrong query: localhost:${port}/user?user={username}'); // send error and end
 			break;
 		}
 
-		res.write(createConsoleTable(getUserByCommand(localDB.todos, `someCommand ${value}`), false));
+		res.write(createConsoleTable(getUserByCommand(localDB.todos, `someCommand ${value}`), false)); // send txt table
 	}
 		break;
 	case '/date': {
 		const [key, value] = srvUrl.query.split('=');
-		if (key !== 'date' || matchDate(value) === null) {
-			res.write('wrong query or date: localhost:${port}/date?date={yyyy[-mm-dd]}​');
+
+		if (key !== 'date' || matchDate(value) === null) { // query validate
+			res.end('wrong query or date: localhost:${port}/date?date={yyyy[-mm-dd]}​'); // send error and end
 			break;
 		}
-		res.write(createConsoleTable(getDateByCommand(localDB.todos, `someCommand ${value}`), false));
+
+		res.write(createConsoleTable(getDateByCommand(localDB.todos, `someCommand ${value}`), false)); // send txt table
 	}
 		break;
 	case '/sort': {
@@ -65,17 +71,18 @@ http.createServer((req, res) => {
 
 		const allowedValues = ['importance', 'user', 'date'];
 
-		if (key !== 'by' || !allowedValues.includes(value)) {
-			res.write('wrong query: localhost:${port}/sort?by={importance | user | date}');
+		if (key !== 'by' || !allowedValues.includes(value)) { // query validate
+			res.end('wrong query: localhost:${port}/sort?by={importance | user | date}'); // send error and end
 			break;
 		}
-		res.write(createConsoleTable(getSortByCommand(localDB.todos, `someCommand ${value}`), false));
+
+		res.write(createConsoleTable(getSortByCommand(localDB.todos, `someCommand ${value}`), false)); // send txt table
 	}
 
 		break;
-	default: {
+	default: { // 'waterfall'
 		const commands =
-        `
+				`
 localhost:${port} - show all commands.
 
 localhost:${port}/show - show all todo withoit filters
@@ -95,7 +102,7 @@ localhost:${port}/date?date={yyyy[-mm-dd]}​ - shows all comments that were cre
     Example commands: "date 2015​ ", "date 2016-02​ ", "date 2018-03-02​ ". 
     In response to the "date 2015" command​ "expected a list of t odo​ that were created in 2015 and later.
 `;
-		res.write(commands);
+		res.write(commands); // send commands
 		break;
 	}
 	}

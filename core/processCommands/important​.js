@@ -1,3 +1,7 @@
+/**
+ * @param {[{ importance: Number, user: String, date: Date, comment: String, fileName: String }]} todos - all todos from fileSystem.js
+ * @returns {[{ importance: Number, user: String, date: Date, comment: String, fileName: String }]} filter by count of '!' (calculated in fileSystem.js)
+ */
 module.exports = (todos) => todos.filter(todo => todo['!'].count > 0);
 
 
